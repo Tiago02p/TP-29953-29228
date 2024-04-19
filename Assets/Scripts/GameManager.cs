@@ -1,8 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.Impl;
-
 
 public class GameManager : MonoBehaviour
 {
@@ -78,11 +76,5 @@ public class GameManager : MonoBehaviour
     {
         Pausepanel.SetActive(false);
         Time.timeScale = 1;
-    }
-
-
-    public void Sair()
-    {
-        UnityEditor.EditorApplication.isPlaying = false;
     }
 }

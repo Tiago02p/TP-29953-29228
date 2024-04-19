@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+
 public class MainMenu : MonoBehaviour
 {
     public GameObject[] paineis; // Array contendo os painéis a serem alternados
@@ -63,6 +64,5 @@ public class MainMenu : MonoBehaviour
     public void Sair()
     {
         audioManager.PlaySFX(audioManager.buttonSound);
-        UnityEditor.EditorApplication.isPlaying = false;
     }
 }
