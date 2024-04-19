@@ -8,6 +8,8 @@ public class Bola : MonoBehaviour
     private float Velocidade = 18;
     Rigidbody rb;
 
+    AudioManager audioManager;
+
     public TextMeshProUGUI velocidadeJogoTexto;
     public TextMeshProUGUI multiplierText;
 
@@ -17,7 +19,7 @@ public class Bola : MonoBehaviour
 
     private int brickCount;
     public int score = 0;
-    private int lives = 5;
+    private int lives = 6;
 
     private int[] values = { -1, 1 };
     private int random;
@@ -82,7 +84,10 @@ public class Bola : MonoBehaviour
         GiveLife,
         StealLife
     }
-
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("audio").GetComponent<AudioManager>();
+    }
     void Start()
     {
         bolaRenderer = GetComponent<Renderer>();
@@ -128,6 +133,7 @@ public class Bola : MonoBehaviour
 
             if (transform.position.y < limiteBaixo)
             {
+                audioManager.PlaySFX(audioManager.deathSound);
                 pressPanel.SetActive(true);
                 transform.position = ballPosition.position;
                 rb.velocity = Vector3.zero;
@@ -154,9 +160,13 @@ public class Bola : MonoBehaviour
 
             if (brickCount == 0)
             {
+                audioManager.PlaySFX(audioManager.newLevelSound);
                 pressPanel.SetActive(true);
                 transform.position = ballPosition.position;
                 rb.velocity = Vector3.zero;
+                Time.timeScale = 1;
+                velocidadeJogoTexto.text = "Normal";
+                multiplierText.text = "x1.0";
                 Levelgenerator.GerarNovoMapa();
             }
         }
@@ -167,6 +177,7 @@ public class Bola : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("tijolo") || collision.gameObject.CompareTag("tijololvl1") || collision.gameObject.CompareTag("tijololvl2") || collision.gameObject.CompareTag("tijololvl3"))
         {
+            audioManager.PlaySFX(audioManager.breakBrickSound);
             if (bolaExplosivaAtiva)
             {
                 Collider[] colliders = Physics.OverlapSphere(collision.contacts[0].point, 2);
@@ -197,9 +208,9 @@ public class Bola : MonoBehaviour
                         StartCoroutine(DestruirExplosao(explosion));
                         Destroy(collision.gameObject);
                         AtualizarScore();
-                    }
-                    Destroy(collision.gameObject);
-                    AtualizarScore();
+                }
+                Destroy(collision.gameObject);
+                AtualizarScore();
                 
             }
 
@@ -297,21 +308,19 @@ public class Bola : MonoBehaviour
 
     public void GiveLife()
     {
-        giveLife.gameObject.SetActive(true);
-        StartCoroutine(Esperar());
-        lives++;
-        if (lives > 5)
+        if (lives < 6)
         {
-            healthBarHUD.AddHealth();
-        }
-        else
-        {
+            audioManager.PlaySFX(audioManager.HealSound);
+            giveLife.gameObject.SetActive(true);
+            StartCoroutine(Esperar());
+            lives++;
             healthBarHUD.Heal(1f);
         }
     }
 
     public void StealLife()
     {
+        audioManager.PlaySFX(audioManager.HurtSound);
         stealLife.gameObject.SetActive(true);
         StartCoroutine(Esperar());
         lives--;
@@ -340,6 +349,7 @@ public class Bola : MonoBehaviour
     {
         if (!barraMaiorAtiva)
         {
+            audioManager.PlaySFX(audioManager.PowerUpSound);
             barraMaiorAtiva = true;
             megabarPanel.gameObject.SetActive(true);
             StartCoroutine(Esperar());
@@ -362,6 +372,7 @@ public class Bola : MonoBehaviour
                 {
                     if (transform.localScale.x < maxScale)
                     {
+                        audioManager.PlaySFX(audioManager.PowerUpSound);
                         megaBallAtiva = true;
                         transform.localScale *= 2;
                         megaballPanel.gameObject.SetActive(true);
@@ -382,6 +393,7 @@ public class Bola : MonoBehaviour
             {
                 if (!bolaExplosivaAtiva)
                 {
+                    audioManager.PlaySFX(audioManager.PowerUpSound);
                     bolaRenderer.material = blackMaterial;
                     
                     bolaExplosivaAtiva = true;
@@ -404,6 +416,7 @@ public class Bola : MonoBehaviour
             {
                 if (!bolaExplosivaAtiva)
                 {
+                    audioManager.PlaySFX(audioManager.PowerUpSound);
                     bolaRenderer.material = blueMaterial;
                     SpeedBallativa = true;
                     SpeedBallPrefab.gameObject.SetActive(true);

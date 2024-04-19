@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
 
     /*Limite do Campo do Jogo*/
     private readonly float limiteX = 11.0f; // Limite horizontal do campo de jogo
-    private readonly float limiteXMegaBar = 8.5f; // Limite horizontal do campo de jogo
+    private readonly float limiteXMegaBar = 8f; // Limite horizontal do campo de jogo
 
     // Variáveis para controle do tamanho da barra
     float tamanhoNormal = 1.0f; // Tamanho normal da barra
